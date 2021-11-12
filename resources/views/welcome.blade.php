@@ -19,29 +19,38 @@
               <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Pricing</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
+              <a class="nav-link" href="{{route('user.index')}}">Users</a>
             </li>
           </ul>
           <ul class="navbar-nav">
+            @auth
             <li class="nav-item">
-                <a class="nav-link" href="{{route('login')}}">Login</a>
-              </li>
+              <a class="nav-link" href="">{{auth()->user()->name}}</a>
+              <div class="text-white">
+              {{auth()->user()->last_seen->diffForHumans()}}
+              </div>
+            </li><li class="nav-item">
+              
+              <a class="nav-link" href="{{route('logout')}}">Logout</a>
+            </li>
+            @endauth
+           
+            @guest
             <li class="nav-item">
-                <a class="nav-link" href="{{route('register')}}">Register</a>
-              </li>
+              <a class="nav-link" href="{{route('login')}}">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{route('register')}}">Register</a>
+            </li>
+            @endguest
+            
           </ul>
         </div>
       </nav>
 
-      <div class="container">
+      <div>
         @yield('content')
-    </div>
+      </div>
     
 </body>
 </html>

@@ -1,3 +1,6 @@
+@extends('welcome')
+@section('content')
+    
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,30 +12,30 @@
     <title>Registration</title>
 </head>
 <body>
-    <form action="{{route('verification.notice')}}" method="get">
+    <form action="{{route('user.update', ['id'=>$userData->id])}}" method="POST">
         @csrf
         <div class="form-group">
           <label for="exampleInputEmail1">Full Name</label>
-          <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+          <input type="text" value="{{$userData->name}}" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
            placeholder="Enter Your Name">
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
-          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
+          <input type="email" value="{{$userData->email}}" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
           placeholder="Enter email">
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Phone</label>
-          <input type="text" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+          <input type="text" value="{{$userData->phone}}" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
            placeholder="Enter Phone Number">
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
-          <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          <input type="password" value="{{$userData->password}}" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Confirm Password</label>
-          <input type="password" name="password_confirmation" class="form-control" id="exampleInputPassword1"
+          <input type="password" value="{{$userData->password}}" name="password_confirmation" class="form-control" id="exampleInputPassword1"
            placeholder=" Confirm Password">
            @error('password_confirmation')
            <div class="alert alert-danger">
@@ -40,7 +43,8 @@
            </div>
        @enderror
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Update</button>
       </form>
 </body>
 </html>
+@endsection
