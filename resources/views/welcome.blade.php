@@ -47,7 +47,11 @@
           </ul>
         </div>
       </nav>
-
+      @if(session('success'))
+      <div class="">
+        {{session('success')}}
+        </div>
+      @endif
       <div>
         @yield('content')
       </div>

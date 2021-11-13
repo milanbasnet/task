@@ -9,8 +9,13 @@
     <title>Registration</title>
 </head>
 <body>
-    <form action="{{route('verification.notice')}}" method="get">
+    <form action="{{route('register')}}" method="post">
         @csrf
+        @if(session('message'))
+        <div class="">
+        {{session('message')}}
+        </div>
+    @endif 
         <div class="form-group">
           <label for="exampleInputEmail1">Full Name</label>
           <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"

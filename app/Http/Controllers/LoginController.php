@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use phpDocumentor\Reflection\Types\Null_;
 
 class LoginController extends Controller
 {
@@ -41,11 +43,15 @@ class LoginController extends Controller
             'password'=>'required'
         ]);
 
-        if(!Auth::attempt($request->only('email','password'))){
-            return back()->with('status', 'invalid details');
+        if(Auth::attempt($request->only('email','password'))){
+            if(Auth::user()->email_verified_at==null){
+                Auth::logout();
+
+            }
+        return redirect()->route('index');
+
         }
 
-        return redirect()->route('index');
         
     }
 
