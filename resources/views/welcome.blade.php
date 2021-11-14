@@ -29,8 +29,11 @@
               <div class="text-white">
               {{auth()->user()->last_seen->diffForHumans()}}
               </div>
-            </li><li class="nav-item">
-              
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{route('change.password')}}">change password</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{{route('logout')}}">Logout</a>
             </li>
             @endauth
@@ -50,6 +53,11 @@
       @if(session('success'))
       <div class="">
         {{session('success')}}
+        </div>
+      @endif
+      @if(session('status'))
+      <div class="">
+        {{session('status')}}
         </div>
       @endif
       <div>

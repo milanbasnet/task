@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
@@ -31,6 +32,10 @@ Route::get('/register', [RegisterController::class, 'index'])->name('register')-
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
 
 Route::get('/logout', [LogoutController::class, 'index'])->name('logout');
+
+//password change 
+Route::get('/password/change', [PasswordController::class, 'index'])->name('change.password');
+Route::post('/password/change', [PasswordController::class, 'store'])->name('change.password');
 
 Route::get('/users', [UserController::class, 'index'])->name('user.index');
 Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');

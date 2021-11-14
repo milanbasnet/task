@@ -11,6 +11,7 @@
 <body>
     <form action="{{route('register')}}" method="post">
         @csrf
+        
         @if(session('message'))
         <div class="">
         {{session('message')}}

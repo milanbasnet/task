@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RegisteredMessage;
 use App\Mail\VerifyEmail;
 use App\Models\User;
 use App\Models\VerifyUser;
+use App\Notifications\UserRegisteredNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -66,6 +68,8 @@ class RegisterController extends Controller
         Mail::to($user->email)->send(new VerifyEmail($user));
         return view('mail.notification')->with('success', 'verification code is sent to your email');
 
+
+
     }
     public function verifyEmail($token){
         $verifiedUser= VerifyUser::where('token',$token)->first();
@@ -77,8 +81,12 @@ class RegisterController extends Controller
 
                 // $data=User::all();
                 // Auth::attempt($user->only('email','password'));
+        Mail::to($user->email)->send(new RegisteredMessage($user));
+
+
                 return redirect()->route('store.login')->with('success', 'email verified');
             }
+        
         }
         else{
             return redirect()->route('register')->with('message', 'something went wrong');

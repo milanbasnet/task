@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class PasswordController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users=User::all();
-        return view('users.users', compact('users'));
+        return view('password.index');
     }
 
     /**
@@ -37,7 +37,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'current_password' => ['required', new MatchOldPassword],
+            'password' => ['required'],
+            'password_confirmation' => ['same:password'],
+        ]);
+
+        User::find(auth()->user()->id)->update(['password'=> Hash::make($request->password)]);
+
+        return redirect()->route('index')->with('status', 'password changed successfully');
     }
 
     /**
@@ -48,7 +56,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-       //
+        //
     }
 
     /**
@@ -59,8 +67,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $userData= User::find($id);
-        return view('users.edit', compact('userData'));
+        //
     }
 
     /**
@@ -72,21 +79,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name'=>'required',
-            'email'=>'required',
-            'phone'=>'required',
-        ]);
-
-        $data=User::find($id);
-        $data->name=$request->name;
-        $data->email=$request->email;
-        $data->phone=$request->phone;
-
-        $data->save();
-        return redirect()->route('user.index');
-
-
+        //
     }
 
     /**
@@ -97,9 +90,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $userDelete=User::find($id);
-        $userDelete->delete();
-
-        return back();
+        //
     }
 }
