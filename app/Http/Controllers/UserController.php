@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Repository\UserRepository;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -13,9 +14,16 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private $userRepository;
+
+    public function __construct()
+    {
+        $this->userRepository = new UserRepository;
+    }
     public function index()
     {
-        $users=User::all();
+        $users = User::all();
         return view('users.users', compact('users'));
     }
 
@@ -48,7 +56,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-       //
+        //
     }
 
     /**
@@ -59,7 +67,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $userData= User::find($id);
+        $userData = User::find($id);
         return view('users.edit', compact('userData'));
     }
 
@@ -70,23 +78,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $this->validate($request, [
-            'name'=>'required',
-            'email'=>'required',
-            'phone'=>'required',
-        ]);
-
-        $data=User::find($id);
-        $data->name=$request->name;
-        $data->email=$request->email;
-        $data->phone=$request->phone;
-
-        $data->save();
-        return redirect()->route('user.index');
-
-
+        if ($this->userRepository->update($request, $id)) {
+            return redirect()->route('user.index');
+        }
+        return redirect()->back()->with('errors', 'not updated');
     }
 
     /**
@@ -97,7 +94,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $userDelete=User::find($id);
+        $userDelete = User::find($id);
         $userDelete->delete();
 
         return back();

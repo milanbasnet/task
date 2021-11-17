@@ -9,10 +9,11 @@ class VerifyUser extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'token', 'user_id'
     ];
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 }

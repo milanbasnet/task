@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var string[]
      */
 
-     
+
     protected $fillable = [
         'name',
         'email',
@@ -26,7 +26,8 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function verifyUser(){
+    public function verifyUser()
+    {
         return $this->hasOne('App\Models\VerifyUser');
     }
 
@@ -49,7 +50,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $dates= [
+    protected $dates = [
         'last_seen'
     ];
 }

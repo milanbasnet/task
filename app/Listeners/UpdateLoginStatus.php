@@ -27,7 +27,7 @@ class UpdateLoginStatus
      */
     public function handle(Login $event)
     {
-        $event->user->last_seen= Carbon::now();
+        $event->user->last_seen = Carbon::now();
         $event->user->save();
     }
 }

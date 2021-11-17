@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Repository\LoginRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use phpDocumentor\Reflection\Types\Null_;
+use App\Http\Requests\StoreLoginRequest;
 
 class LoginController extends Controller
 {
@@ -14,10 +13,16 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private $loginRepository;
+
+    public function __construct()
+    {
+        $this->loginRepository = new LoginRepository;
+    }
     public function index()
     {
         return view('auth.login');
-        
     }
 
     /**
@@ -36,23 +41,11 @@ class LoginController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreLoginRequest $request)
     {
-        $this->validate($request, [
-            'email'=>'required',
-            'password'=>'required'
-        ]);
-
-        if(Auth::attempt($request->only('email','password'))){
-            if(Auth::user()->email_verified_at==null){
-                Auth::logout();
-
-            }
-        return redirect()->route('index');
-
+        if ($this->loginRepository->login($request)) {
+            return redirect()->route('index');
         }
-
-        
     }
 
     /**

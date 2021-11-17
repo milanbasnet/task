@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\RegisteredMessage;
-use App\Mail\VerifyEmail;
-use App\Models\User;
-use App\Models\VerifyUser;
-use App\Notifications\UserRegisteredNotification;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use App\Models\VerifyUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Mail\RegisteredMessage;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\StoreRegisterRequest;
+use App\Http\Repository\RegisterRepository;
 
 class RegisterController extends Controller
 {
@@ -21,6 +17,13 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private $registerRepository;
+
+    public function __construct()
+    {
+        $this->registerRepository = new RegisterRepository;
+    }
     public function index()
     {
         return view('auth.register');
@@ -42,55 +45,19 @@ class RegisterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRegisterRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required|max:255',
-            'password'=>'required|min:6',
-            'password_confirmation'=>'required|min:6|same:password',
-        ]);
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->password = Hash::make($request->password);
+        $user = $this->registerRepository;
+        $user->store($request);
 
-        $user->save();
-        //send email
-
-        VerifyUser::create([
-            'token'=>Str::random(60),
-            'user_id'=>$user->id
-        ]);
-
-        Mail::to($user->email)->send(new VerifyEmail($user));
         return view('mail.notification')->with('success', 'verification code is sent to your email');
-
-
-
     }
-    public function verifyEmail($token){
-        $verifiedUser= VerifyUser::where('token',$token)->first();
-        if(isset($verifiedUser)){
-            $user=$verifiedUser->user;
-            if(!$user->email_verified_at){
-                $user->email_verified_at=Carbon::now();
-                $user->save();
-
-                // $data=User::all();
-                // Auth::attempt($user->only('email','password'));
-        Mail::to($user->email)->send(new RegisteredMessage($user));
-
-
-                return redirect()->route('store.login')->with('success', 'email verified');
-            }
-        
+    public function verifyEmail($token)
+    {
+        if ($this->registerRepository->emailVerify($token)) {
+            return redirect()->route('store.login')->with('success', 'email verified');
         }
-        else{
-            return redirect()->route('register')->with('message', 'something went wrong');
-        }
+        return redirect()->route('register')->with('message', 'something went wrong');
     }
 
     /**

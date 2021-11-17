@@ -46,7 +46,3 @@ Route::get('/user/{id}/delete', [UserController::class, 'destroy'])->name('user.
 //eamil verification routes
 
 Route::get('user/verify/{token}', [RegisterController::class, 'verifyEmail'])->name('user.verify');
-
-
-
-

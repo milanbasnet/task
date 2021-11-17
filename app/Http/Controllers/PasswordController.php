@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\StorePasswordRequest;
 
 class PasswordController extends Controller
 {
@@ -35,15 +36,9 @@ class PasswordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePasswordRequest $request)
     {
-        $request->validate([
-            'current_password' => ['required', new MatchOldPassword],
-            'password' => ['required'],
-            'password_confirmation' => ['same:password'],
-        ]);
-
-        User::find(auth()->user()->id)->update(['password'=> Hash::make($request->password)]);
+        User::find(auth()->user()->id)->update(['password' => Hash::make($request->password)]);
 
         return redirect()->route('index')->with('status', 'password changed successfully');
     }
