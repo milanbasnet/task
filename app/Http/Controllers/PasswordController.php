@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Rules\MatchOldPassword;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Repository\PasswordRepository;
 use App\Http\Requests\StorePasswordRequest;
 
 class PasswordController extends Controller
@@ -15,6 +13,13 @@ class PasswordController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private $passwordRepository;
+
+    public function __construct()
+    {
+        $this->passwordRepository= new PasswordRepository;
+    }
     public function index()
     {
         return view('password.index');
@@ -38,8 +43,11 @@ class PasswordController extends Controller
      */
     public function store(StorePasswordRequest $request)
     {
-        User::find(auth()->user()->id)->update(['password' => Hash::make($request->password)]);
-
+        try {
+            $this->passwordRepository->update($request);
+        } catch (\Throwable $th) {
+            return back()->with('error_message', $th->getMessage());
+        }
         return redirect()->route('index')->with('status', 'password changed successfully');
     }
 

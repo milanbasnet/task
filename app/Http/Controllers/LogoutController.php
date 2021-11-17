@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Repository\LogoutRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
 class LogoutController extends Controller
 {
     /**
@@ -12,10 +11,19 @@ class LogoutController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private $logoutRepository;
+
+    public function __construct()
+    {
+        $this->logoutRepository= new LogoutRepository;
+    }
     public function index()
     {
-        Auth::logout();
-
+        try {
+            $this->logoutRepository->logout();
+        } catch (\Throwable $th) {
+            return back()->with('error_message', $th->getMessage());
+        }
         return redirect()->route('index');
     }
 

@@ -43,9 +43,12 @@ class LoginController extends Controller
      */
     public function store(StoreLoginRequest $request)
     {
-        if ($this->loginRepository->login($request)) {
-            return redirect()->route('index');
+        try {
+            $this->loginRepository->login($request);
+        } catch (\Throwable $th) {
+            return back()->with('error_message', $th->getMessage());
         }
+        return redirect()->route('index');
     }
 
     /**
